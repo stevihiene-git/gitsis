@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>{% block title %}Student Information System{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Add all your CSS styles here in the base template */
         * {
             margin: 0;
             padding: 0;
@@ -15,101 +16,110 @@
         }
 
         body {
-            font-family: 'Arvo', serif;
-            background-color: #F9F6CC;
-            color: #333;
-            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
         }
 
-        /* Add all other styles from previous base.html here */
-        /* ... your existing base.html styles ... */
-        .navbar {
-            background-color: #790100;
-            padding: 15px 0;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
+        /* Main Content Wrapper */
+        .main-content {
+            flex: 1;
         }
 
-        .navbar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Container */
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .navbar-brand {
-            color: #ffffff;
-            font-size: 1.5rem;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .navbar-nav {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-item {
-            margin-left: 20px;
-        }
-
-        .nav-item a {
-            color: #ffffff;
-            text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .nav-item a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .logout-form {
-            display: inline;
-            margin: 0;
-            padding: 0;
-        }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: inherit;
-            transition: background-color 0.3s;
-        }
-
-        .logout-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .content {
-            margin-top: 80px;
             padding: 20px;
         }
 
-        /* Flash messages */
+        /* Navigation Bar */
+        .navbar {
+            background: rgb(121, 1, 0);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-brand a {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-brand a:hover {
+            opacity: 0.9;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: opacity 0.3s;
+        }
+
+        .mobile-menu-btn:hover {
+            opacity: 0.8;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+            display: inline-block;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Flash Messages */
         .flash-messages {
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
 
         .alert {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .alert-success {
@@ -118,10 +128,16 @@
             border: 1px solid #c3e6cb;
         }
 
-        .alert-error {
+        .alert-error, .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
         }
 
         .alert-info {
@@ -130,205 +146,525 @@
             border: 1px solid #bee5eb;
         }
 
+        .close-alert {
+            float: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: inherit;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: rgb(121, 1, 0);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a0100;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+        }
+
+        .btn-outline-danger {
+            background-color: transparent;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgb(121, 1, 0);
+            color: #fff;
+            margin-top: 50px;
+            padding: 40px 0 20px;
+            font-size: 14px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-left: 3px solid #fff;
+            padding-left: 10px;
+        }
+
+        .footer-section p {
+            line-height: 1.6;
+            color: #f0f0f0;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #f0f0f0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #ffcc00;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-links a {
+            color: #f0f0f0;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #ffcc00;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            /* Mobile Menu */
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 12px;
+            }
+
+            /* Cards and grids */
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .role-card, .stat-card {
+                padding: 15px;
+            }
+
+            /* Forms */
+            input, select, textarea {
+                font-size: 16px;
+            }
+
+            /* Buttons */
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+                margin: 5px 0;
+                text-align: center;
+            }
+
+            /* Dashboard sections */
+            .dashboard-section {
+                padding: 15px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            /* Filter controls */
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                justify-content: space-between;
+            }
+
+            .filter-group select {
+                flex: 1;
+                margin-left: 10px;
+            }
+
+            /* Session and semester cards */
+            .session-card {
+                margin-bottom: 20px;
+            }
+
+            .semester-card {
+                margin: 10px;
+            }
+
+            .semester-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            /* Footer */
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .footer-section h4 {
+                border-left: none;
+                padding-left: 0;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .footer-section ul {
+                text-align: center;
+            }
+        }
+
+        /* Small phones */
+        @media (max-width: 480px) {
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.9rem;
+            }
+
+            .table th, .table td {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
+
+        /* Table Responsive */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .table th {
+            background-color: rgb(121, 1, 0);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Touch-friendly targets */
+        .btn, button, [role="button"], .nav-links a {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Loading spinner */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid rgb(121, 1, 0);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <!-- Your navigation and content -->
-<nav class="navbar">
-    <div class="container">
-        <a class="navbar-brand" href="/">
-            <i class="fas fa-graduation-cap"></i> SIS
-        </a>
-
-        {% if current_user.is_authenticated %}
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a href="/{{ current_user.role.lower() }}/dashboard">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-            </li>
-
-            {% if current_user.role == 'Student' %}
-            <li class="nav-item">
-                <a href="/student/register_course">
-                    <i class="fas fa-book"></i> Register Courses
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/student/results">
-                    <i class="fas fa-chart-bar"></i> Results
-                </a>
-            </li>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/">📚 SIS</a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/auth/logout" onclick="return confirm('Are you sure you want to logout?')"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            {% else %}
+                <li><a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
             {% endif %}
-
-            <!-- Other role-specific navigation items -->
-
-            <li class="nav-item">
-                <form class="logout-form" action="/auth/logout" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i> Logout ({{ current_user.name }})
-                    </button>
-                </form>
-            </li>
         </ul>
-        {% endif %}
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <button class="close-alert" onclick="this.parentElement.remove()">&times;</button>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
     </div>
-</nav>
-    {% block content %}{% endblock %}
-   
+
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Student Information System</h4>
-                    <p>Your complete academic management solution</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/auth/login">Login</a></li>
-                        {% if current_user.is_authenticated %}
-                            <li><a href="/dashboard">Dashboard</a></li>
-                            <li><a href="/auth/logout" onclick="return confirm('Logout?')">Logout</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <p><i class="fas fa-envelope"></i> support@sis.edu</p>
-                    <p><i class="fas fa-phone"></i> +234 8060317514</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Follow Us</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                    </div>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Student Information System</h4>
+                <p>Your complete academic management solution</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/auth/login">Login</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="/dashboard">Dashboard</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p><i class="fas fa-envelope"></i> support@sis.edu</p>
+                <p><i class="fas fa-phone"></i> +234 123 456 7890</p>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; {{ now.year if now else 2024 }} Student Information System BY MIT817 group1 student, UNILAG. All rights reserved.</p>
-            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Student Information System. All rights reserved.</p>
         </div>
     </footer>
 
-    <style>
-    /* Footer Styles */
-    .footer {
-        background: rgb(53, 3, 2);  /* Your brand color */
-        color: #fff;
-        margin-top: 50px;
-        padding: 40px 0 20px;
-        font-size: 14px;
-    }
-
-    .footer-content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 30px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .footer-section h4 {
-        color: #fff;
-        margin-bottom: 15px;
-        font-size: 1.2rem;
-        font-weight: 600;
-        border-left: 3px solid #fff;
-        padding-left: 10px;
-    }
-
-    .footer-section p {
-        line-height: 1.0;
-        color: #f0f0f0;
-    }
-
-    .footer-section ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .footer-section ul li {
-        margin-bottom: 8px;
-    }
-
-    .footer-section ul li a {
-        color: #f0f0f0;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .footer-section ul li a:hover {
-        color: #ffcc00;
-        padding-left: 5px;
-    }
-
-    .social-links {
-        display: flex;
-        gap: 15px;
-        margin-top: 10px;
-    }
-
-    .social-links a {
-        color: #f0f0f0;
-        font-size: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .social-links a:hover {
-        color: #ffcc00;
-        transform: translateY(-3px);
-    }
-
-    .footer-bottom {
-        text-align: center;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
-        color: #f0f0f0;
-        font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-        .footer-content {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 20px;
-        }
-        
-        .footer-section h4 {
-            border-left: none;
-            padding-left: 0;
-            text-align: center;
-        }
-        
-        .social-links {
-            justify-content: center;
-        }
-        
-        .footer-section ul {
-            text-align: center;
-        }
-    }
-    </style>
-
     <script>
-    // Update year in footer
-    document.addEventListener('DOMContentLoaded', function() {
-        const footerYear = document.querySelector('.footer-bottom p');
-        if (footerYear) {
-            const currentYear = new Date().getFullYear();
-            footerYear.innerHTML = footerYear.innerHTML.replace(/\d{4}/, currentYear);
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('show');
         }
-    });
-    </script>
 
+        // Auto-hide flash messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.remove();
+                        }
+                    }, 500);
+                }, 5000);
+            });
+
+            // Update footer year
+            const footerYear = document.querySelector('.footer-bottom p');
+            if (footerYear) {
+                const currentYear = new Date().getFullYear();
+                footerYear.innerHTML = footerYear.innerHTML.replace(/\d{4}/, currentYear);
+            }
+        });
+
+        // Close alert manually
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('close-alert')) {
+                e.target.parentElement.remove();
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
