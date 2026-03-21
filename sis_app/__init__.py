@@ -72,6 +72,11 @@ def create_app():
 
 # Create app instance
 app = create_app()
+# Add this after app = create_app()
+@app.context_processor
+def inject_now():
+    from datetime import datetime
+    return {'now': datetime.now()}
 
 # Import models and routes after app creation to avoid circular imports
 from .models import User, Student, Course, CourseRegistration, Score, Payment, SecurityAudit
