@@ -176,6 +176,7 @@
     </div>
 </nav>
     {% block content %}{% endblock %}
+   
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -219,8 +220,8 @@
     <style>
     /* Footer Styles */
     .footer {
-        background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
-        color: #ecf0f1;
+        background: rgb(121, 1, 0);  /* Your brand color */
+        color: #fff;
         margin-top: 50px;
         padding: 40px 0 20px;
         font-size: 14px;
@@ -236,14 +237,17 @@
     }
 
     .footer-section h4 {
-        color: #790100;
+        color: #fff;
         margin-bottom: 15px;
         font-size: 1.2rem;
+        font-weight: 600;
+        border-left: 3px solid #fff;
+        padding-left: 10px;
     }
 
     .footer-section p {
         line-height: 1.6;
-        color: #bdc3c7;
+        color: #f0f0f0;
     }
 
     .footer-section ul {
@@ -256,13 +260,14 @@
     }
 
     .footer-section ul li a {
-        color: #bdc3c7;
+        color: #f0f0f0;
         text-decoration: none;
         transition: color 0.3s ease;
     }
 
     .footer-section ul li a:hover {
-        color: #790100;
+        color: #ffcc00;
+        padding-left: 5px;
     }
 
     .social-links {
@@ -272,21 +277,22 @@
     }
 
     .social-links a {
-        color: #bdc3c7;
+        color: #f0f0f0;
         font-size: 1.5rem;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
     }
 
     .social-links a:hover {
-        color: #790100;
+        color: #ffcc00;
+        transform: translateY(-3px);
     }
 
     .footer-bottom {
         text-align: center;
         margin-top: 30px;
         padding-top: 20px;
-        border-top: 1px solid #34495e;
-        color: #95a5a6;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        color: #f0f0f0;
         font-size: 0.9rem;
     }
 
@@ -295,6 +301,12 @@
             grid-template-columns: 1fr;
             text-align: center;
             gap: 20px;
+        }
+        
+        .footer-section h4 {
+            border-left: none;
+            padding-left: 0;
+            text-align: center;
         }
         
         .social-links {
@@ -310,12 +322,13 @@
     <script>
     // Update year in footer
     document.addEventListener('DOMContentLoaded', function() {
-        const yearSpan = document.querySelector('.footer-bottom p');
-        if (yearSpan) {
+        const footerYear = document.querySelector('.footer-bottom p');
+        if (footerYear) {
             const currentYear = new Date().getFullYear();
-            yearSpan.innerHTML = yearSpan.innerHTML.replace(/\d{4}/, currentYear);
+            footerYear.innerHTML = footerYear.innerHTML.replace(/\d{4}/, currentYear);
         }
     });
     </script>
+
 </body>
 </html>
