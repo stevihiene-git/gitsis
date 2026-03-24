@@ -7,6 +7,12 @@ from .models import User, Student, Course, CourseRegistration, Score, Payment, i
 import re
 import secrets
 
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+
+
 # Blueprint configuration
 auth_bp = Blueprint('auth', __name__, template_folder='templates')  # Changed from 'public' to 'templates'
 
@@ -73,7 +79,6 @@ def get_dashboard_route():
     }
 
     return url_for(role_routes.get(current_user.role, 'views.index'))
-
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -147,10 +152,8 @@ def signup():
                 if not student:
                     student = Student(user_id=user.id, balance=0.0)
                     db.session.add(student)
-                    logger.info(f"Student profile created for {unique_id}")
 
             db.session.commit()
-            logger.info(f"User {unique_id} ({name}) successfully activated")
             
             # Flash success message and redirect to login
             flash('Profile completed successfully! Please log in with your password.', 'success')
@@ -158,7 +161,6 @@ def signup():
 
         except Exception as e:
             db.session.rollback()
-            logger.error(f"Error completing signup for {unique_id}: {str(e)}")
             flash('Error completing profile. Please try again.', 'error')
             return render_template('signup.html', 
                                  unique_id=unique_id, 
@@ -167,6 +169,7 @@ def signup():
 
     # GET request - show signup form
     return render_template('signup.html')
+    
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
