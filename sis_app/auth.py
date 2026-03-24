@@ -74,38 +74,98 @@ def get_dashboard_route():
 
     return url_for(role_routes.get(current_user.role, 'views.index'))
 
+
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
         return redirect(get_dashboard_route())
 
     if request.method == 'POST':
-        # ... existing validation code ...
+        unique_id = request.form.get('unique_id', '').strip()
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
 
-        # Update user
+        # Validation
+        errors = []
+        if not all([unique_id, name, email, password, confirm_password]):
+            errors.append('All fields are required')
+
+        if password != confirm_password:
+            errors.append('Passwords do not match')
+
+        if not validate_email(email):
+            errors.append('Please enter a valid email address')
+
+        is_valid_password, password_error = validate_password(password)
+        if not is_valid_password:
+            errors.append(password_error)
+
+        if errors:
+            for error in errors:
+                flash(error, 'error')
+            return render_template('signup.html', 
+                                 unique_id=unique_id, 
+                                 name=name, 
+                                 email=email)
+
+        # Check if user exists with this unique_id
+        user = User.query.filter_by(unique_id=unique_id).first()
+        if not user:
+            flash('Unique ID not found. Please contact admin to be added.', 'error')
+            return render_template('signup.html', 
+                                 unique_id=unique_id, 
+                                 name=name, 
+                                 email=email)
+
+        # Check if user is already active
+        if user.is_active:
+            flash('Account already activated. Please log in.', 'error')
+            return redirect(url_for('auth.login'))
+
+        # Check if email is already in use by another active account
+        existing_email = User.query.filter_by(email=email).first()
+        if existing_email and existing_email.id != user.id:
+            flash('Email already in use by another account.', 'error')
+            return render_template('signup.html', 
+                                 unique_id=unique_id, 
+                                 name=name, 
+                                 email=email)
+
+        # Update user profile
         try:
             user.name = name
             user.email = email
             user.password_hash = generate_password_hash(password)
             user.is_active = True
-            user.must_change_password = True  # Keep this as True for first login
+            user.must_change_password = True  # Force password change on first login
 
-            # Create student record if needed
-            if user.role == 'Student' and not Student.query.filter_by(user_id=user.id).first():
-                student = Student(user_id=user.id, balance=0.0)
-                db.session.add(student)
+            # Create student record if role is Student
+            if user.role == 'Student':
+                student = Student.query.filter_by(user_id=user.id).first()
+                if not student:
+                    student = Student(user_id=user.id, balance=0.0)
+                    db.session.add(student)
+                    logger.info(f"Student profile created for {unique_id}")
 
             db.session.commit()
+            logger.info(f"User {unique_id} ({name}) successfully activated")
             
-            # After successful signup, redirect to login with message
+            # Flash success message and redirect to login
             flash('Profile completed successfully! Please log in with your password.', 'success')
             return redirect(url_for('auth.login'))
 
         except Exception as e:
             db.session.rollback()
+            logger.error(f"Error completing signup for {unique_id}: {str(e)}")
             flash('Error completing profile. Please try again.', 'error')
-            return render_template('signup.html', unique_id=unique_id, name=name, email=email)
+            return render_template('signup.html', 
+                                 unique_id=unique_id, 
+                                 name=name, 
+                                 email=email)
 
+    # GET request - show signup form
     return render_template('signup.html')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -192,19 +252,27 @@ def change_password():
         try:
             user = db.session.get(User, current_user.id)
             user.password_hash = generate_password_hash(new_password)
-            user.must_change_password = False  # This should already be set to False
+            user.must_change_password = False  # Clear the flag
             db.session.commit()
 
-            flash('Password changed successfully! Please log in again.', 'success')
-            logout_user()  # Log out after password change
-            return redirect(url_for('auth.login'))  # Redirect to login
+            logger.info(f"Password changed for user {current_user.unique_id}")
+            
+            # Log out the user after password change
+            logout_user()
+            session.clear()
+            
+            flash('Password changed successfully! Please log in with your new password.', 'success')
+            return redirect(url_for('auth.login'))
 
         except Exception as e:
             db.session.rollback()
+            logger.error(f"Error changing password: {str(e)}")
             flash('Error changing password. Please try again.', 'error')
             return render_template('change_password.html')
 
     return render_template('change_password.html')
+
+
 
 @auth_bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
