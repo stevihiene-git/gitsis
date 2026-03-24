@@ -10,6 +10,7 @@ import secrets
 import logging
 
 # Configure logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -79,6 +80,8 @@ def get_dashboard_route():
     }
 
     return url_for(role_routes.get(current_user.role, 'views.index'))
+
+
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -155,12 +158,14 @@ def signup():
 
             db.session.commit()
             
-            # ✅ Redirect to LOGIN page, not change_password
+            # IMPORTANT: DO NOT log the user in here
+            # Just redirect to login page
             flash('Profile completed successfully! Please log in with your password.', 'success')
             return redirect(url_for('auth.login'))
 
         except Exception as e:
             db.session.rollback()
+            logger.error(f"Error completing signup: {str(e)}")
             flash('Error completing profile. Please try again.', 'error')
             return render_template('signup.html', 
                                  unique_id=unique_id, 
@@ -168,6 +173,8 @@ def signup():
                                  email=email)
 
     return render_template('signup.html')
+
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -194,7 +201,7 @@ def login():
                 session.modified = True
                 session['_fresh'] = True
 
-                # ✅ Check if password needs to be changed
+                # Only redirect to change_password if must_change_password is True
                 if user.must_change_password:
                     flash('Please change your password for security reasons.', 'info')
                     return redirect(url_for('auth.change_password'))
@@ -210,6 +217,8 @@ def login():
         return render_template('login.html', unique_id=unique_id)
 
     return render_template('login.html')
+
+
 
 @auth_bp.route('/logout', methods=['POST'])
 @login_required
