@@ -19,7 +19,7 @@ def get_redirect_url():
         'Admin': 'views.admin_dashboard',
         'Student': 'views.student_dashboard',
         'Lecturer': 'views.lecturer_dashboard',
-        'Finance': 'views.finance_dashboard'
+        #'Finance': 'views.finance_dashboard'
     }
     return url_for(role_routes.get(current_user.role, 'views.index'))
 
@@ -52,7 +52,7 @@ def index():
         {'name': 'Admin', 'description': 'Manage users and courses', 'url': '/auth/login'},
         {'name': 'Student', 'description': 'Register courses and view results', 'url': '/auth/login'},
         {'name': 'Lecturer', 'description': 'Upload scores for courses', 'url': '/auth/login'},
-        {'name': 'Finance', 'description': 'Manage student payments', 'url': '/auth/login'}
+        #{'name': 'Finance', 'description': 'Manage student payments', 'url': '/auth/login'}
     ]
     return render_template('index.html', roles=roles)
 
@@ -64,7 +64,7 @@ def dashboard():
         'Student': 'views.student_dashboard',
         'Admin': 'views.admin_dashboard',
         'Lecturer': 'views.lecturer_dashboard',
-        'Finance': 'views.finance_dashboard'
+        #'Finance': 'views.finance_dashboard'
     }
     route = role_routes.get(current_user.role)
     if route:
@@ -672,21 +672,21 @@ def lecturer_upload_score(course_id):
 
 
 # --- Finance Routes ---
-@views_bp.route('/finance_dashboard')
-@login_required
-def finance_dashboard():
-    if current_user.role != 'Finance' and current_user.role != 'Admin':
-        flash("Access denied.", "danger")
-        return redirect(url_for('views.dashboard'))
+# @views_bp.route('/finance_dashboard')
+# @login_required
+# def finance_dashboard():
+#     if current_user.role != 'Finance' and current_user.role != 'Admin':
+#         flash("Access denied.", "danger")
+#         return redirect(url_for('views.dashboard'))
     
-    payments = Payment.query.order_by(Payment.date_paid.desc()).limit(50).all()
-    students_with_balance = Student.query.filter(Student.balance > 0).all()
-    total_revenue = db.session.query(db.func.sum(Payment.amount)).filter(Payment.status == 'Success').scalar() or 0
+#     payments = Payment.query.order_by(Payment.date_paid.desc()).limit(50).all()
+#     students_with_balance = Student.query.filter(Student.balance > 0).all()
+#     total_revenue = db.session.query(db.func.sum(Payment.amount)).filter(Payment.status == 'Success').scalar() or 0
     
-    return render_template('finance_dashboard.html',
-                         payments=payments,
-                         students_with_balance=students_with_balance,
-                         total_revenue=total_revenue)
+#     return render_template('finance_dashboard.html',
+#                          payments=payments,
+#                          students_with_balance=students_with_balance,
+#                          total_revenue=total_revenue)
 
 
 # --- Payment Routes ---

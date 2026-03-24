@@ -554,29 +554,28 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">
-            <a href="/">📚 SIS</a>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
-        </div>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-            {% if current_user.is_authenticated %}
-                <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li>
-    <form action="/auth/logout" method="POST" style="margin: 0; display: inline;">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit" onclick="return confirm('Are you sure you want to logout?')" 
-                style="background: none; border: none; color: white; cursor: pointer; padding: 8px 15px; font-size: 14px; width: 100%; text-align: left;">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </button>
-    </form>
-</li>
-            {% else %}
-                <li><a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-            {% endif %}
-        </ul>
+    <div class="nav-brand">
+        <a href="/">📚 SIS</a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+    </div>
+    <ul class="nav-links" id="navLinks">
+        {% if current_user.is_authenticated %}
+            <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li>
+                <form action="/auth/logout" method="POST" style="margin: 0; display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" onclick="return confirm('Are you sure you want to logout?')" 
+                            style="background: none; border: none; color: white; cursor: pointer; padding: 8px 15px; font-size: 14px;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
+        {% else %}
+            <li><a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        {% endif %}
+    </ul>
     </nav>
-
+    
     <div class="main-content">
         <div class="container">
             <!-- Flash Messages -->
@@ -600,38 +599,27 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Student Information System</h4>
-                <p>Your complete academic management solution</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                {% if current_user.is_authenticated %}
+                    <li><a href="/dashboard">Dashboard</a></li>
+                {% else %}
                     <li><a href="/">Home</a></li>
-                    <li><a href="/auth/login">Login</a></li>
-                    {% if current_user.is_authenticated %}
-                        <li><a href="/dashboard">Dashboard</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Contact</h4>
-                <p><i class="fas fa-envelope"></i> support@sis.edu</p>
-                <p><i class="fas fa-phone"></i> +234 8060317514</p>
-            </div>
-            <div class="footer-section">
-                <h4>Follow Us</h4>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-github"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Student Information System by MIT817 Student, UNILAG. All rights reserved.</p>
+                {% endif %}
+                <li><a href="/auth/login">Login</a></li>
+                {% if current_user.is_authenticated %}
+                    <li>
+                        <form action="/auth/logout" method="POST" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" onclick="return confirm('Are you sure you want to logout?')" 
+                                    style="background: none; border: none; color: #f0f0f0; cursor: pointer; padding: 0;">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
     </footer>
 

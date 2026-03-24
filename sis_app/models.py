@@ -27,7 +27,7 @@ class User(db.Model, UserMixin):
     
     @validates('role')
     def validate_role(self, key, role):
-        valid_roles = ['Admin', 'Student', 'Lecturer', 'Finance']
+        valid_roles = ['Admin', 'Student', 'Lecturer']
         if role not in valid_roles:
             raise ValueError('Invalid role specified')
         return role
