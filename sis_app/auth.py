@@ -129,7 +129,7 @@ def signup():
             flash('Account already activated. Please log in.', 'error')
             return redirect(url_for('auth.login'))
 
-        # Check if email is already in use by another active account
+        # Check if email is already in use
         existing_email = User.query.filter_by(email=email).first()
         if existing_email and existing_email.id != user.id:
             flash('Email already in use by another account.', 'error')
@@ -144,7 +144,7 @@ def signup():
             user.email = email
             user.password_hash = generate_password_hash(password)
             user.is_active = True
-            user.must_change_password = True  # Force password change on first login
+            user.must_change_password = True  # Force password change on FIRST login
 
             # Create student record if role is Student
             if user.role == 'Student':
@@ -155,7 +155,7 @@ def signup():
 
             db.session.commit()
             
-            # Flash success message and redirect to login
+            # ✅ Redirect to LOGIN page, not change_password
             flash('Profile completed successfully! Please log in with your password.', 'success')
             return redirect(url_for('auth.login'))
 
@@ -167,9 +167,7 @@ def signup():
                                  name=name, 
                                  email=email)
 
-    # GET request - show signup form
     return render_template('signup.html')
-    
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -196,6 +194,7 @@ def login():
                 session.modified = True
                 session['_fresh'] = True
 
+                # ✅ Check if password needs to be changed
                 if user.must_change_password:
                     flash('Please change your password for security reasons.', 'info')
                     return redirect(url_for('auth.change_password'))
